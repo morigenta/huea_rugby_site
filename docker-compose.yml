@@ -1,0 +1,51 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - ./entrypoint.sh:/app/entrypoint.sh
+      - ./src:/app
+    env_file:
+      - .env.dev
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["/app/entrypoint.sh"]
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/development:/etc/nginx/conf.d
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: huea_rugby_site
+      MYSQL_USER: huea_rugby_site_user
+      MYSQL_PASSWORD: kN9mP2vL5@jH8xQ4
+      MYSQL_ROOT_PASSWORD: xJ5mK9pL3@vN7!qR4
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=caching_sha2_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+  static_volume:
+  media_volume:
