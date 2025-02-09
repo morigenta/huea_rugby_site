@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_cleanup',
     'home',
+    'news',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
