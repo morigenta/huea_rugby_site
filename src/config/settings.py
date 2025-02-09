@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django_cleanup',
     'home',
     'news',
+    'member',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

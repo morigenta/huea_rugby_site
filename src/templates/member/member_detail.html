@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ member.name }} - 部員紹介 - HUEA Rugby{% endblock %}
+
+{% block content %}
+<div class="member-detail">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ member.photo.url }}" class="img-fluid rounded" alt="{{ member.name }}">
+        </div>
+        <div class="col-md-8">
+            <h1 class="mb-3">{{ member.name }}</h1>
+            <table class="table">
+                <tr>
+                    <th scope="row" style="width: 30%">学年</th>
+                    <td>{{ member.get_grade_display }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">所属専攻</th>
+                    <td>{{ member.major }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">体重</th>
+                    <td>{{ member.weight }}kg</td>
+                </tr>
+                <tr>
+                    <th scope="row">座右の銘</th>
+                    <td>{{ member.motto }}</td>
+                </tr>
+            </table>
+
+            <h3 class="mt-4">新入生へのメッセージ</h3>
+            <div class="message-box p-3 bg-light rounded">
+                {{ member.message|linebreaks }}
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'member:list' %}" class="btn btn-secondary">一覧に戻る</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

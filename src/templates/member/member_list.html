@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}部員紹介 - HUEA Rugby{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">部員紹介</h1>
+
+{% if members %}
+    <div class="row">
+        {% for member in members %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ member.photo.url }}" class="card-img-top" alt="{{ member.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ member.name }}</h5>
+                        <p class="card-text">
+                            {{ member.get_grade_display }} / {{ member.major }}<br>
+                            体重: {{ member.weight }}kg
+                        </p>
+                        <a href="{% url 'member:detail' member.pk %}" class="btn btn-primary">詳細を見る</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>表示できる部員情報がありません。</p>
+{% endif %}
+{% endblock %}
