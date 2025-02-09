@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load faq_extras %}
+
+{% block title %}よくある質問 - HUEA Rugby{% endblock %}
+
+{% block extra_css %}
+<style>
+    .faq-answer {
+        display: none;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        margin-top: 0.5rem;
+    }
+    .faq-question {
+        cursor: pointer;
+        padding: 0.5rem;
+        margin: 0;
+    }
+    .faq-question:hover {
+        background-color: #f8f9fa;
+    }
+    .category-header {
+        cursor: pointer;
+        padding: 1rem;
+        background-color: #0d6efd;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .category-header:hover {
+        background-color: #0b5ed7;
+    }
+    .category-content {
+        display: none;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-top: none;
+    }
+    .category-icon {
+        transition: transform 0.3s ease;
+    }
+    .category-icon.open {
+        transform: rotate(180deg);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="faq-container">
+    <h1 class="mb-4">よくある質問</h1>
+
+    {% if categories %}
+        <div class="accordion">
+            {% for category in categories %}
+                {% with faqs=faq_by_category|get_item:category %}
+                    {% if faqs %}
+                        <div class="category-section mb-3">
+                            <div class="category-header" onclick="toggleCategory('category-{{ category.id }}')">
+                                <h2 class="h5 mb-0">{{ category.name }}</h2>
+                                <span class="category-icon">▼</span>
+                            </div>
+                            <div id="category-{{ category.id }}" class="category-content">
+                                {% for faq in faqs %}
+                                    <div class="faq-item mb-2">
+                                        <h5 class="faq-question" onclick="toggleAnswer('faq-{{ faq.id }}', event)">
+                                            <span class="me-2">Q.</span>
+                                            {{ faq.question }}
+                                        </h5>
+                                        <div id="faq-{{ faq.id }}" class="faq-answer">
+                                            <span class="d-block mb-2">A.</span>
+                                            {{ faq.answer|linebreaks }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>現在、FAQはありません。</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleCategory(categoryId) {
+    const content = document.getElementById(categoryId);
+    const header = content.previousElementSibling;
+    const icon = header.querySelector('.category-icon');
+
+    if (content.style.display === 'none' || content.style.display === '') {
+        content.style.display = 'block';
+        icon.classList.add('open');
+    } else {
+        content.style.display = 'none';
+        icon.classList.remove('open');
+    }
+}
+
+function toggleAnswer(id, event) {
+    event.stopPropagation();  // カテゴリのトグルが発火するのを防ぐ
+    const answer = document.getElementById(id);
+    const question = answer.previousElementSibling;
+
+    if (answer.style.display === 'none' || answer.style.display === '') {
+        answer.style.display = 'block';
+        question.style.backgroundColor = '#e9ecef';
+    } else {
+        answer.style.display = 'none';
+        question.style.backgroundColor = '';
+    }
+}
+
+// ページ読み込み時の初期化
+document.addEventListener('DOMContentLoaded', function() {
+    // 全てのカテゴリコンテンツを非表示に
+    const categories = document.querySelectorAll('.category-content');
+    categories.forEach(category => {
+        category.style.display = 'none';
+    });
+
+    // 全ての回答を非表示に
+    const answers = document.querySelectorAll('.faq-answer');
+    answers.forEach(answer => {
+        answer.style.display = 'none';
+    });
+});
+</script>
+{% endblock %}
